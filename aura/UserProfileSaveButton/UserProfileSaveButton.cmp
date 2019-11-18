@@ -1,0 +1,26 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes">
+
+  <ltng:require styles="/resource/SLDS102/assets/styles/salesforce-lightning-design-system-ltng.css" />
+
+  <aura:handler event="aura:doneRendering"
+                action="{!c.doDoneRendering}"/>
+
+  <aura:attribute type="String"
+                  name="userId"
+                  required="true" />
+  <aura:attribute type="String"
+                  name="buttonText"
+                  required="true"
+                  default="Save Profile" />
+
+  <aura:registerEvent name="hideSaveButtonEvent"
+                      type="c:UserProfileHideSaveButton"/>
+  <aura:registerEvent name="clickSaveButtonEvent"
+                      type="c:UserProfileSaveButtonClick"/>
+  <div class="slds">
+    <ui:button aura:id="save-button"
+               label="{!v.buttonText}"
+               class="slds-button slds-button--neutral"
+               press="{!c.save}" />
+  </div>
+</aura:component>

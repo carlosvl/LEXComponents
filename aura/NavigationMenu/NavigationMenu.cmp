@@ -1,0 +1,21 @@
+<aura:component controller="NavigationMenuController"
+                implements="forceCommunity:availableForAllPageTypes">
+  <aura:attribute name="navigationLinks"
+                  type="NavigationLinkWrapper" />
+  <aura:handler name="init"
+                value="{!this}"
+                action="{!c.doGetNavigationLinks}"/>
+  <nav class="forceCommunityNavigationMenu">
+    <div class="navigationMenuWrapper">
+      <ul class="navigationMenu">
+        <aura:iteration items="{!v.navigationLinks}"
+                        var="nl">
+          <li class="navigationMenuNode">
+            <a href="{!nl.link}"
+               class="menuItemLink">{!nl.label}</a>
+          </li>
+        </aura:iteration>
+      </ul>
+    </div>
+  </nav>
+</aura:component>

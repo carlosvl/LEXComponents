@@ -1,0 +1,130 @@
+<aura:component controller="UserProfileController"
+                implements="forceCommunity:availableForAllPageTypes">
+
+  <ltng:require styles="/resource/SLDS102/assets/styles/salesforce-lightning-design-system-ltng.css" />
+
+  <aura:handler name="init"
+                value="{!this}"
+                action="{!c.doInit}"/>
+  <aura:handler event="c:FieldSetFormUpdate"
+                name="formUpdated"
+                action="{!c.handleFormUpdate}" />
+  <aura:handler event="c:UserProfileHideSaveButton"
+                action="{!c.handleHideSaveButton}"/>
+  <aura:handler event="c:UserProfileSaveButtonClick"
+                action="{!c.handleMassSave}"/>
+
+  <aura:registerEvent name="clearFormEvent"
+                      type="c:ClearFieldSetForm"/>
+  <aura:registerEvent name="profileSaved"
+                      type="c:UserProfileSaved" />
+
+  <aura:attribute name="userId"
+                  type="String"
+                  required="true" />
+  <aura:attribute name="fieldSetName"
+                  type="String"
+                  default="User_Profile_Fields" />
+  <aura:attribute name="enableCitizenshipFields"
+                  type="Boolean"
+                  default="true" />
+  <aura:attribute name="enablePresentAddress"
+                  type="Boolean"
+                  default="false" />
+
+  <aura:attribute name="currentContact"
+                  type="Contact"
+                  access="private" />
+  <aura:attribute name="valid"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="saveSuccessful"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="saveError"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="errorMessages"
+                  type="String[]"
+                  access="private" />
+  <aura:attribute name="isNonCitizen"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="presentAddressDiff"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="requiredFields"
+                  type="Map"
+                  access="private" />
+  <aura:attribute name="hideSaveButton"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="showUserProfileLoading"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+                      
+  <div class="slds">
+
+    <span><aura:if isTrue="{!v.showUserProfileLoading}"><div class="slds-spinner_container">
+        <div class="slds-spinner slds-spinner--medium" aria-hidden="false" role="alert">
+          <div class="slds-spinner__dot-a"></div>
+          <div class="slds-spinner__dot-b"></div>
+        </div>
+      </div></aura:if></span>
+
+    <aura:if isTrue="{!v.saveSuccessful}">
+      <div class="slds-notify_container">
+        <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+          <span class="slds-assistive-text">Success</span>
+          <h2>
+            {!$Label.c.Profile_Successfully_Saved}
+          </h2>
+        </div>
+      </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.saveError}">
+      <div class="slds-notify_container">
+        <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+          <span class="slds-assistive-text">Error</span>
+          <aura:iteration items="{!v.errorMessages}"
+                          var="message">
+            <h2>
+              {!message}
+            </h2>
+          </aura:iteration>
+        </div>
+      </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.currentContact != null}">
+      <c:FieldSetForm fieldSetName="{!v.fieldSetName}"
+                      currentObject="{!v.currentContact}" />
+
+      <aura:if isTrue="{!and(v.isNonCitizen, v.enableCitizenshipFields)}">                
+        <c:FieldSetForm fieldSetName="Citizenship_Fields"
+                        currentObject="{!v.currentContact}" />
+      </aura:if>
+      <aura:if isTrue="{!and(v.presentAddressDiff, v.enablePresentAddress)}">
+        <c:FieldSetForm fieldSetName="Present_Address"
+                        currentObject="{!v.currentContact}" />
+      </aura:if>
+
+      <span><aura:if isTrue="{!!v.hideSaveButton}">
+        <ui:button aura:id="save-button"
+                   label="Save"
+                   class="slds-button slds-button--neutral"
+                   press="{!c.save}"
+                   disabled="{!!v.valid}" />
+      </aura:if></span>
+    </aura:if>
+  </div>
+
+</aura:component>

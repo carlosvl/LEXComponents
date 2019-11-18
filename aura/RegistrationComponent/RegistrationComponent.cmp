@@ -1,0 +1,111 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes"
+                controller="RegistrationComponentController">
+
+  <ltng:require styles="/resource/CustomCommunityStyles/CustomCommunityStyles/registration.css" />
+
+  <aura:handler name="init"
+                value="{!this}"
+                action="{!c.doInit}"/>
+  <aura:handler event="c:FieldSetFormUpdate"
+                name="formUpdated"
+                action="{!c.handleFormUpdate}" />
+
+  <aura:attribute name="fieldSetName"
+                  type="String"
+                  default="NewUserRegistrationFields"
+                  required="true" />
+  <aura:attribute name="confirmationUrl"
+                  type="String"
+                  required="true" />
+
+  <aura:attribute name="currentContact"
+                  type="Contact"
+                  access="private" />
+  <aura:attribute name="valid"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="saveError"
+                  type="Boolean"
+                  access="private"
+                  default="false" />
+  <aura:attribute name="savingInProgress"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="showDuplicateUserError"
+                  type="Boolean"
+                  default="false"
+                  access="private" />
+  <aura:attribute name="errorMessages"
+                  type="String[]"
+                  access="private" />
+  <aura:attribute name="requiredFields"
+                  type="String[]"
+                  access="private"
+                  default="['Entry_Term__c']" />
+
+  <div class="slds">
+    <span><aura:if isTrue="{!v.showDuplicateUserError}">
+      <div class="slds-notify_container">
+        <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+          <span class="slds-assistive-text"><aura:unescapedHtml value="{!$Label.c.DuplicateUsernameMessage}" /></span>
+          <aura:iteration items="{!v.errorMessages}"
+                          var="message">
+            <h2>
+              <aura:unescapedHtml value="{!$Label.c.DuplicateUsernameMessage}" />
+            </h2>
+          </aura:iteration>
+        </div>
+      </div>
+    </aura:if></span>
+  </div>
+
+  <div class="outer-form-div" id="newUserPageBlock">
+    <div class="form-div">
+
+      <span><aura:if isTrue="{!v.saveError}">
+        <div>
+          <aura:iteration items="{!v.errorMessages}"
+                            var="message">
+            <div class="uiOutputRichText">
+              {!message}
+            </div>
+          </aura:iteration>
+        </div>
+      </aura:if></span>
+
+      <aura:if isTrue="{!v.currentContact != null}">
+        <c:FieldSetForm fieldSetName="{!v.fieldSetName}"
+                        currentObject="{!v.currentContact}"
+                        registrationStyle="true" />
+      </aura:if>
+
+      <div class="input-div">
+      <div class="required-field">
+          <div class="picklist-label">
+            {!$Label.c.Entry_Term_Label}
+          </div>
+        <div>
+          <ui:inputSelect class="input-select" 
+                          aura:id="Entry_Term__c"
+                          value="{!v.currentContact.Entry_Term__c}"
+                          change="{!c.handleTermChange}" />
+        </div>
+      </div>
+    </div>
+
+      <span><aura:if isTrue="{!v.savingInProgress}">{!$Label.c.Saving_Status_Text}</aura:if></span>
+
+      <div class="sfdc">
+        <ui:button aura:id="save-button"
+                   class="btn register-button"
+                   label="Register"
+                   press="{!c.save}"
+                   disabled="{!!v.valid || v.savingInProgress}" />
+      </div>
+    </div>
+  </div>
+
+
+</aura:component>

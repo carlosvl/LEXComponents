@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="userId" label="User Id" />
+	<design:attribute name="buttonText" label="Save Button Text" />
+</design:component>

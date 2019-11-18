@@ -1,0 +1,32 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes"
+                extends="c:ApplicationSectionWrapper"
+                controller="UserProfileSectionController">
+
+  <aura:handler name="init"
+                value="{!this}"
+                action="{!c.doInit}"/>
+  <aura:handler event="c:UserProfileSaved"
+                name="profileSaved"
+                action="{!c.handleProfileSaved}" />
+
+  <aura:attribute name="fieldSetName"
+                  type="String"
+                  default="User_Profile_Fields" />
+  <aura:attribute name="enableCitizenshipFields"
+                  type="Boolean"
+                  default="true" />
+  <aura:attribute name="enablePresentAddress"
+                  type="Boolean"
+                  default="false" />
+
+  <aura:attribute name="currentUser"
+                  type="User"
+                  access="private" />
+
+  <span><aura:if isTrue="{!v.currentUser != null}">
+    <c:UserProfile userId="{!v.currentUser.Id}"
+                   fieldSetName="{!v.fieldSetName}"
+                   enablePresentAddress="{!v.enablePresentAddress}"
+                   enableCitizenshipFields="{!v.enableCitizenshipFields}" />
+  </aura:if></span>
+</aura:component>

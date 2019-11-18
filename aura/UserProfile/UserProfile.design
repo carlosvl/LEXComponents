@@ -1,0 +1,6 @@
+<design:component>
+	<design:attribute name="userId" label="User Id" />
+	<design:attribute name="fieldSetName" label="Field set Developer Name (Optional)" />
+	<design:attribute name="enableCitizenshipFields" label="Enable Citizenship Field Set" />
+	<design:attribute name="enablePresentAddress" label="Enable Present Address Field Set" />
+</design:component>
